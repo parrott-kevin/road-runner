@@ -1,36 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import axios from 'axios';
-import Table from './Table.jsx';
-import Card from './Card.jsx';
+import Home from './Home.jsx';
+import DetailCard from './DetailCard.jsx';
 
-class Root extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      details: 0
-    }
-    this.showDetails = this.showDetails.bind(this);
-  }
-
-  async componentDidMount() {
-    const {data } = await axios.get('https://jsonplaceholder.typicode.com/users')
-    this.setState({ data })
-  }
-
-  showDetails (id) {
-    this.setState({ details: id })
-  }
-
-  render () {
-    const { data, details } = this.state;
-    return (
-      <Card data={data} details={details} showDetails={this.showDetails} />
-    );
-  }
-}
-
+const Root = () => (
+  <Router>
+    <Fragment>
+      <Route exact path="/" component={Home} />
+      <Route path="/person/:id" component={DetailCard} />
+    </Fragment>
+  </Router>
+);
 
 export default Root;
