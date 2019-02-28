@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
+
 import { withStyles } from '@material-ui/core/styles';
 
 import {
@@ -16,17 +18,6 @@ import {
 import { ExpandMore } from '@material-ui/icons';
 
 const styles = theme => ({
-  card: {
-    minWidth: 275
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)'
-  },
-  pos: {
-    marginBottom: 12
-  },
   expand: {
     transform: 'rotate(0deg)',
     marginLeft: 'auto',
@@ -53,7 +44,7 @@ class SimpleCard extends Component {
   }
 
   render() {
-    const { classes, data, toggleDetails } = this.props;
+    const { classes, data } = this.props;
 
     const expandIcon = (
       <IconButton
@@ -75,20 +66,29 @@ class SimpleCard extends Component {
           <CardContent>
             <Grid container>
               <Grid item xs={12} sm={6}>
-                <Typography>email: {data.email}</Typography>
+                <Typography color="secondary" variant="caption">
+                  email
+                </Typography>
+                <Typography>{data.email}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography>phone: {data.phone}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography>
-                  website: <a href={data.website}>{data.website}</a>
+                <Typography color="secondary" variant="caption">
+                  phone
                 </Typography>
+                <Typography>{data.phone}</Typography>
               </Grid>
               <Grid item xs={12}>
-                <Button onClick={() => toggleDetails(data.id)}>
-                  Show Details
-                </Button>
+                <Typography color="secondary" variant="caption">
+                  website
+                </Typography>
+                <Typography>{data.website}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link to={`/person/${data.id}`}>
+                  <Button>Show Details</Button>
+                </Link>
               </Grid>
             </Grid>
           </CardContent>
@@ -100,8 +100,7 @@ class SimpleCard extends Component {
 
 SimpleCard.propTypes = {
   classes: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired,
-  toggleDetails: PropTypes.func.isRequired
+  data: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(SimpleCard);

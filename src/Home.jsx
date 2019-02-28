@@ -1,61 +1,64 @@
-import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import queryString from 'query-string';
 
-import axios from 'axios';
+import { Grid } from '@material-ui/core';
+
+import { withStyles } from '@material-ui/core/styles';
+
+import Navbar from './Navbar.jsx';
 import SimpleCard from './SimpleCard.jsx';
+
+const styles = theme => ({
+  toolbar: theme.mixins.toolbar
+});
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      details: 0
-    };
-    this.toggleDetails = this.toggleDetails.bind(this);
-  }
-
-  async componentDidMount() {
-    const { data } = await axios.get(
-      'https://jsonplaceholder.typicode.com/users'
-    );
-    this.setState({ data });
-  }
-
-  toggleDetails(id) {
-    if (this.state.details === id) {
-      this.setState({ details: 0 });
-    } else {
-      this.setState({ details: id });
-    }
   }
 
   render() {
-    const { data } = this.state;
-    if (data.length === 0) {
-      return (
-        <Grid container spacing={16} alignItems="center" justify="center">
-          <Grid item>
-            <CircularProgress />
-          </Grid>
-        </Grid>
-      );
-    }
+    const {
+      classes,
+      location: { search },
+      data
+    } = this.props;
 
+    const { name } = queryString.parse(search);
     const items = data.map(i => {
-      return (
-        <Grid key={i.id} item xs={4}>
-          <SimpleCard data={i} toggleDetails={this.toggleDetails} />
+      const item = (
+        <Grid key={i.id} item xs={12} sm={6} md={4}>
+          <SimpleCard data={i} />
         </Grid>
       );
+      if (name) {
+        if (i.name.toLowerCase().includes(name.toLowerCase())) {
+          return item;
+        } else {
+          return null;
+        }
+      } else {
+        return item;
+      }
     });
+
     return (
-      <Grid container spacing={16}>
-        {items}
-      </Grid>
+      <Fragment>
+        <Navbar title="Contacts" />
+        <div className={classes.toolbar} />
+        <Grid container spacing={16}>
+          {items}
+        </Grid>
+      </Fragment>
     );
   }
 }
 
-export default Home;
+Home.propTypes = {
+  classes: PropTypes.object,
+  location: PropTypes.object,
+  data: PropTypes.array
+};
+
+export default withStyles(styles)(Home);
